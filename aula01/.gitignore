@@ -1,0 +1,3 @@
+#Ignorar o node modules
+.node_modules
+
