@@ -20,9 +20,21 @@ export class Database{
         fs.writeFile(databasaePath, JSON.stringify(this.#database))
 
     }
+//{name: "Diego" , email: "Diego"}
+//Object.entries trasforma em um array cahve valor
+//[['name','Diego']['email','Diego']]
+//Some percorre o array e se pelo menos uma das vezes que ele que percorrer o array ele retornar true quer dizer que aquele item do array deve ser incluido no filter
+    select(table,search){
+        let data = this.#database[table] ?? []
+        if (search){
+            data = data.filter(row=>{
+                return Object.entries(search).some((key,value)=>{
+                    return row[key].toLowerCase().includes(value.toLowerCase())
 
-    select(table){
-        const data = this.#database[table] ?? []
+                })
+            })
+        }
+
         return data
     }
 
@@ -36,6 +48,23 @@ export class Database{
         this.#persist();
 
         return data;
+    }
+    upadate(table,id,data){
+        const rowIndex = this.#database[table].findIndex(row => row.id===id)
+
+        if(rowIndex > -1){
+            this.#database[table][rowIndex] = {id,...data}
+            this.#persist()
+        }
+    }
+
+    delete(table,id){
+        const rowIndex = this.#database[table].findIndex(row => row.id===id)
+
+        if(rowIndex > -1){
+            this.#database[table].splice(rowIndex,1)
+            this.#persist()
+        }
     }
     
 
